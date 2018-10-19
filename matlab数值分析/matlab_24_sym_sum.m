@@ -1,3 +1,4 @@
+%符号求和和特殊级数问题
 %题（1） e的展开式
 syms x k
 s=x^k/sym(factorial(k));
