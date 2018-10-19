@@ -17,3 +17,19 @@ y=rou*sin(theta);
 z=rou;
 %分别计算出E,G,F
 E=diff(x,rou)^2+diff(y,rou)^2+diff(z,rou)^2;
+F=diff(x,rou)*diff(y,theta)+diff(y,rou)*diff(y,theta)+diff(z,rou)*diff(z,theta);
+G=diff(x,theta)^2+diff(y,theta)^2+diff(z,theta)^2;
+%分别把E，F，G化简
+E=simplify(E);
+F=simplify(F);
+G=simplify(G);
+%面积微元
+ds=simplify(sqrt(E*G-F*F));
+%被积函数
+f=x*y+y*z+z*x;
+int1=int(f*ds,rou,0,sin(theta));
+int_2=int(int1,theta,0,pi);
+%作出圆锥面函数图像
+syms x y
+z=sqrt(x^2+y^2);
+ezsurf(z,'circ')

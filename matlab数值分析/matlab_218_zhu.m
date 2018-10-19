@@ -1,0 +1,35 @@
+%正交曲线坐标系的三度问题
+%柱坐标系下的梯度、散度和旋度问题
+syms rou fa z positive
+u=rou;
+v=theta;
+w=z;
+%坐标变换
+x=rou*cos(theta);
+y=rou*sin(theta);
+z=z;
+%计算拉梅系数
+h1=sqrt(diff(x,u)^2+diff(y,u)^2+diff(z,u)^2);
+h2=sqrt(diff(x,v)^2+diff(y,v)^2+diff(z,v)^2);
+h3=sqrt(diff(x,w)^2+diff(y,w)^2+diff(z,w)^2);
+%化简拉梅系数
+h1=simplify(h1);
+h2=simplify(h2);
+h3=simplify(h3);
+%柱坐标系下的数量场和矢量场
+syms f A1 A2 A3
+f=u*cos(w+v);
+A1=u*cos(2*v);
+A2=v+w;
+A3=cos(v);
+%计算梯度
+grad_f=[diff(f,u)/h1,diff(f,v)/h2,diff(f,w)/h3];
+div_A=(diff(h2*h3*A1,u)+diff(h3*h1*A2,v)+diff(h1*h2*A3,w))/h1/h2/h3;
+rot1=diff(h3*A3,v)-diff(h2*A2,w);
+rot2=diff(h1*A1,w)-diff(h3*A3,u);
+rot3=diff(h2*A2,u)-diff(h1*A1,v);
+rot_A=[rot1,rot2,rot3];
+%对三者化简
+grad_f=simplify(grad_f)
+div_A=simplify(div_A)
+rot_A=simplify(rot_A)
