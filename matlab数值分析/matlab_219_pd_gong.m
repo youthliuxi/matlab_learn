@@ -1,0 +1,39 @@
+%立场中的保守力场与非保守立场
+%判断力场是否为保守力场
+syms x y z
+F=[x+2*y+z+5,d2*x+y+z,x+y+z-6];
+Fx=F(1);
+Fy=F(2);
+Fz=F(3);
+l1=diff(Fz,y)-diff(Fy,z);
+%l1这时候编程逻辑变量，真时为1，假时为0
+l1=(l1==0);
+l2=diff(Fx,z)-diff(Fz,x);
+l2=(l2==0);
+l3=diff(Fx,y)-diff(Fy,x);
+l3=(l3==0);
+if(l1&l2&l3)
+    disp('该力场为保守力场')
+else
+    disp('该力场为非保守力场')
+end
+%%%%%%%%%%%%%%%%%%
+
+%第二个力场
+syms x y z
+F=[2*x-3*y+4*z-5,z-x+8,x+y+z+12];
+Fx=F(1);
+Fy=F(2);
+Fz=F(3);
+l1=diff(Fz,y)-diff(Fy,z);
+%l1这时候编程逻辑变量，真时为1，假时为0
+l1=(l1==0);
+l2=diff(Fx,z)-diff(Fz,x);
+l2=(l2==0);
+l3=diff(Fx,y)-diff(Fy,x);
+l3=(l3==0);
+if(l1&l2&l3)
+    disp('该力场为保守力场')
+else
+    disp('该力场为非保守力场')
+end
