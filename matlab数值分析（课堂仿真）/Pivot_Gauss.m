@@ -1,5 +1,5 @@
 %Pivot_Gauss.m
-function Pivot_Gauss(A,b)
+function x=Pivot_Gauss(A,b)
     n=length(b);
     for k=1:n-1
         [max_value,max_index]=max(abs(A(k:n,k)));%步骤2.1（选主元）
@@ -13,11 +13,11 @@ function Pivot_Gauss(A,b)
             %交换矩阵的第k行和第rk行
             t=b(k);b(k)=b(rk);b(rk)=t;
         end
-    end
-    for i=k+1:n
-        L(i,k)=A(i,k)/A(k,k);
-        A(i,k+1:n)=A(i,k+1:n)-L(i,k)*A(k,k+1:n);
-        b(i)=b(i)-L(i,k)*b(k);
+        for i=k+1:n
+            L(i,k)=A(i,k)/A(k,k);
+            A(i,k+1:n)=A(i,k+1:n)-L(i,k)*A(k,k+1:n);
+            b(i)=b(i)-L(i,k)*b(k);
+        end
     end
     if A(n,n)==0
         waring('系数矩阵奇异');
