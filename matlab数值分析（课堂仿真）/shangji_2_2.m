@@ -19,4 +19,8 @@ t=toc
 tic
 x=Doolittle(A,b)
 t=toc
+%disp('使用普通的Doolittle方法：')
+tic
+x=Doolittle_2(A,b)
+t=toc
 %y=A\b
