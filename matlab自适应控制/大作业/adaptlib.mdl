@@ -1,0 +1,1941 @@
+Library {
+  Name			  "adaptlib"
+  Version		  2.20
+  BlockDefaults {
+    Orientation		    right
+    ForegroundColor	    black
+    BackgroundColor	    white
+    DropShadow		    off
+    NamePlacement	    normal
+    FontName		    "Helvetica"
+    FontSize		    10
+    FontWeight		    normal
+    FontAngle		    normal
+    ShowName		    on
+  }
+  AnnotationDefaults {
+    HorizontalAlignment	    center
+    VerticalAlignment	    middle
+    ForegroundColor	    black
+    BackgroundColor	    white
+    DropShadow		    off
+    FontName		    "Helvetica"
+    FontSize		    10
+    FontWeight		    normal
+    FontAngle		    normal
+  }
+  LineDefaults {
+    FontName		    "Helvetica"
+    FontSize		    9
+    FontWeight		    normal
+    FontAngle		    normal
+  }
+  System {
+    Name		    "adaptlib"
+    Location		    [25, 414, 624, 921]
+    Open		    on
+    ToolBar		    on
+    StatusBar		    on
+    ScreenColor		    white
+    PaperOrientation	    landscape
+    PaperPositionMode	    auto
+    PaperType		    usletter
+    PaperUnits		    inches
+    Block {
+      BlockType		      SubSystem
+      Name		      "Adaptive\n2DOF controller"
+      Ports		      [3, 1, 0, 0, 0]
+      Position		      [50, 39, 125, 91]
+      ShowPortLabels	      on
+      MaskDescription	      "A two-degree-of-freedom linear controller \n\n "
+" R(q)u(k) = T(q)u_c(k) - S(q)y(k)\n"
+      MaskPromptString	      "n (degree of R, S and T)|Initial state (size 3n"
+"+1)|Sampling period"
+      MaskStyleString	      "edit,edit,edit"
+      MaskTunableValueString  "on,on,on"
+      MaskVariables	      "n_r=@1;x_0_r=@2;h=@3;"
+      MaskIconFrame	      on
+      MaskIconOpaque	      on
+      MaskIconRotate	      none
+      MaskIconUnits	      autoscale
+      MaskValueString	      "||"
+      System {
+	Name			"Adaptive\n2DOF controller"
+	Location		[101, 398, 426, 555]
+	Open			off
+	ToolBar			off
+	StatusBar		off
+	ScreenColor		white
+	PaperOrientation	landscape
+	PaperPositionMode	auto
+	PaperType		usletter
+	PaperUnits		inches
+	Block {
+	  BlockType		  Inport
+	  Name			  "[R,S,T]"
+	  Position		  [30, 13, 60, 27]
+	  Port			  "1"
+	  PortWidth		  "-1"
+	  SampleTime		  "-1"
+	}
+	Block {
+	  BlockType		  Inport
+	  Name			  "u_c"
+	  Position		  [20, 48, 50, 62]
+	  Port			  "2"
+	  PortWidth		  "-1"
+	  SampleTime		  "-1"
+	}
+	Block {
+	  BlockType		  Inport
+	  Name			  "y"
+	  Position		  [30, 83, 60, 97]
+	  Port			  "3"
+	  PortWidth		  "-1"
+	  SampleTime		  "-1"
+	}
+	Block {
+	  BlockType		  Mux
+	  Name			  "Mux"
+	  Ports			  [3, 1, 0, 0, 0]
+	  Position		  [90, 27, 125, 63]
+	  Inputs		  "3"
+	}
+	Block {
+	  BlockType		  "S-Function"
+	  Name			  "S-Function"
+	  Ports			  [1, 1, 0, 0, 0]
+	  Position		  [165, 30, 225, 60]
+	  FunctionName		  "rst"
+	  Parameters		  "n_r,x_0_r,h"
+	  PortCounts		  "[]"
+	  SFunctionModules	  "''"
+	}
+	Block {
+	  BlockType		  Outport
+	  Name			  "u"
+	  Position		  [250, 38, 280, 52]
+	  Port			  "1"
+	  OutputWhenDisabled	  held
+	  InitialOutput		  "0"
+	}
+	Line {
+	  SrcBlock		  "S-Function"
+	  SrcPort		  1
+	  DstBlock		  "u"
+	  DstPort		  1
+	}
+	Line {
+	  SrcBlock		  "[R,S,T]"
+	  SrcPort		  1
+	  Points		  [0, 15]
+	  DstBlock		  "Mux"
+	  DstPort		  1
+	}
+	Line {
+	  SrcBlock		  "y"
+	  SrcPort		  1
+	  Points		  [0, -35]
+	  DstBlock		  "Mux"
+	  DstPort		  3
+	}
+	Line {
+	  SrcBlock		  "u_c"
+	  SrcPort		  1
+	  Points		  [0, -10]
+	  DstBlock		  "Mux"
+	  DstPort		  2
+	}
+	Line {
+	  SrcBlock		  "Mux"
+	  SrcPort		  1
+	  DstBlock		  "S-Function"
+	  DstPort		  1
+	}
+      }
+    }
+    Block {
+      BlockType		      SubSystem
+      Name		      "Adaptive \n2DOF controller\nwith antiwindup"
+      Ports		      [3, 1, 0, 0, 0]
+      Position		      [180, 40, 255, 90]
+      ShowPortLabels	      on
+      MaskDescription	      "A two-degree-of-freedom linear controller with "
+"control signal saturation and anti windup.\n\n  A_o(q)v(k)=T(q)u_c(k)-S(q)y(k"
+")-(A_o(q)-R(q))u(t)\n  u(k)=f(v(k))\n"
+      MaskPromptString	      "n_r (degree of R, S and T)|Maximum control sign"
+"al|A_o (Anti windup polynomial)|Sampling period"
+      MaskStyleString	      "edit,edit,edit,edit"
+      MaskTunableValueString  "on,on,on,on"
+      MaskVariables	      "n_r=@1;ulim=@2;A_o=@3;h=@4;"
+      MaskIconFrame	      on
+      MaskIconOpaque	      on
+      MaskIconRotate	      none
+      MaskIconUnits	      autoscale
+      MaskValueString	      "|||"
+      System {
+	Name			"Adaptive \n2DOF controller\nwith antiwindup"
+	Location		[422, 85, 902, 294]
+	Open			off
+	ToolBar			off
+	StatusBar		off
+	ScreenColor		white
+	PaperOrientation	landscape
+	PaperPositionMode	auto
+	PaperType		usletter
+	PaperUnits		inches
+	Block {
+	  BlockType		  Inport
+	  Name			  "[R,S,T]"
+	  Position		  [70, 68, 100, 82]
+	  Port			  "1"
+	  PortWidth		  "-1"
+	  SampleTime		  "-1"
+	}
+	Block {
+	  BlockType		  Inport
+	  Name			  "u_c"
+	  Position		  [70, 108, 100, 122]
+	  Port			  "2"
+	  PortWidth		  "-1"
+	  SampleTime		  "-1"
+	}
+	Block {
+	  BlockType		  Inport
+	  Name			  "y"
+	  Position		  [70, 143, 100, 157]
+	  Port			  "3"
+	  PortWidth		  "-1"
+	  SampleTime		  "-1"
+	}
+	Block {
+	  BlockType		  Mux
+	  Name			  "Mux"
+	  Ports			  [3, 1, 0, 0, 0]
+	  Position		  [170, 97, 205, 133]
+	  Inputs		  "3"
+	}
+	Block {
+	  BlockType		  "S-Function"
+	  Name			  "S-Function"
+	  Ports			  [1, 1, 0, 0, 0]
+	  Position		  [245, 100, 305, 130]
+	  FunctionName		  "rstwind"
+	  Parameters		  "n_r,h,A_o,ulim"
+	  PortCounts		  "[]"
+	  SFunctionModules	  "''"
+	}
+	Block {
+	  BlockType		  Outport
+	  Name			  "u"
+	  Position		  [345, 108, 375, 122]
+	  Port			  "1"
+	  OutputWhenDisabled	  held
+	  InitialOutput		  "0"
+	}
+	Line {
+	  SrcBlock		  "u_c"
+	  SrcPort		  1
+	  DstBlock		  "Mux"
+	  DstPort		  2
+	}
+	Line {
+	  SrcBlock		  "S-Function"
+	  SrcPort		  1
+	  DstBlock		  "u"
+	  DstPort		  1
+	}
+	Line {
+	  SrcBlock		  "Mux"
+	  SrcPort		  1
+	  DstBlock		  "S-Function"
+	  DstPort		  1
+	}
+	Line {
+	  SrcBlock		  "y"
+	  SrcPort		  1
+	  Points		  [50, 0]
+	  DstBlock		  "Mux"
+	  DstPort		  3
+	}
+	Line {
+	  SrcBlock		  "[R,S,T]"
+	  SrcPort		  1
+	  Points		  [50, 0]
+	  DstBlock		  "Mux"
+	  DstPort		  1
+	}
+      }
+    }
+    Block {
+      BlockType		      SubSystem
+      Name		      "Adaptive Discrete Filter"
+      Ports		      [3, 1, 0, 0, 0]
+      Position		      [305, 33, 375, 97]
+      ShowPortLabels	      on
+      MaskPromptString	      "n_N (degree numerator)|n_D (degree denominator)"
+"|h"
+      MaskStyleString	      "edit,edit,edit"
+      MaskTunableValueString  "on,on,on"
+      MaskVariables	      "n_N=@1;n_D=@2;h=@3;"
+      MaskDisplay	      "disp(' Num(z) \\n \\n Den(z) \\n \\n u')\n\n"
+      MaskIconFrame	      on
+      MaskIconOpaque	      on
+      MaskIconRotate	      none
+      MaskIconUnits	      autoscale
+      MaskValueString	      "||"
+      System {
+	Name			"Adaptive Discrete Filter"
+	Location		[47, 453, 423, 658]
+	Open			off
+	ToolBar			off
+	StatusBar		off
+	ScreenColor		white
+	PaperOrientation	landscape
+	PaperPositionMode	auto
+	PaperType		usletter
+	PaperUnits		inches
+	Block {
+	  BlockType		  Inport
+	  Name			  "In1"
+	  Position		  [35, 43, 65, 57]
+	  Port			  "1"
+	  PortWidth		  "-1"
+	  SampleTime		  "-1"
+	}
+	Block {
+	  BlockType		  Inport
+	  Name			  "In2"
+	  Position		  [35, 83, 65, 97]
+	  Port			  "2"
+	  PortWidth		  "-1"
+	  SampleTime		  "-1"
+	}
+	Block {
+	  BlockType		  Inport
+	  Name			  "In3"
+	  Position		  [35, 123, 65, 137]
+	  Port			  "3"
+	  PortWidth		  "-1"
+	  SampleTime		  "-1"
+	}
+	Block {
+	  BlockType		  Mux
+	  Name			  "Mux"
+	  Ports			  [3, 1, 0, 0, 0]
+	  Position		  [95, 30, 135, 150]
+	  Inputs		  "[n_N+1 1 1]"
+	}
+	Block {
+	  BlockType		  "S-Function"
+	  Name			  "S-Function"
+	  Ports			  [1, 1, 0, 0, 0]
+	  Position		  [175, 75, 235, 105]
+	  FunctionName		  "zfilter"
+	  Parameters		  "n_D,n_N,h"
+	  PortCounts		  "[]"
+	  SFunctionModules	  "''"
+	}
+	Block {
+	  BlockType		  Outport
+	  Name			  "Out1"
+	  Position		  [295, 83, 325, 97]
+	  Port			  "1"
+	  OutputWhenDisabled	  held
+	  InitialOutput		  "[]"
+	}
+	Line {
+	  SrcBlock		  "In1"
+	  SrcPort		  1
+	  DstBlock		  "Mux"
+	  DstPort		  1
+	}
+	Line {
+	  SrcBlock		  "In2"
+	  SrcPort		  1
+	  DstBlock		  "Mux"
+	  DstPort		  2
+	}
+	Line {
+	  SrcBlock		  "In3"
+	  SrcPort		  1
+	  DstBlock		  "Mux"
+	  DstPort		  3
+	}
+	Line {
+	  SrcBlock		  "Mux"
+	  SrcPort		  1
+	  DstBlock		  "S-Function"
+	  DstPort		  1
+	}
+	Line {
+	  SrcBlock		  "S-Function"
+	  SrcPort		  1
+	  DstBlock		  "Out1"
+	  DstPort		  1
+	}
+      }
+    }
+    Block {
+      BlockType		      SubSystem
+      Name		      "Direct RLS-Estimator"
+      Ports		      [2, 2, 0, 0, 0]
+      Position		      [175, 351, 250, 404]
+      Priority		      "1"
+      ShowPortLabels	      on
+      MaskPromptString	      "n_r (degree of R, S and T)|Initial estimate|Ini"
+"tial covariance matrix|lambda|A_m|A_o|d0|Sampling period"
+      MaskStyleString	      "edit,edit,edit,edit,edit,edit,edit,edit"
+      MaskTunableValueString  "on,on,on,on,on,on,on,on"
+      MaskVariables	      "n_r=@1;theta_0=@2;P_0=@3;lambda=@4;A_m=@5;A_o=@"
+"6;d0=@7;h=@8;"
+      MaskIconFrame	      on
+      MaskIconOpaque	      on
+      MaskIconRotate	      none
+      MaskIconUnits	      autoscale
+      MaskValueString	      "|||||||"
+      System {
+	Name			"Direct RLS-Estimator"
+	Location		[307, 696, 1129, 908]
+	Open			off
+	ToolBar			off
+	StatusBar		off
+	ScreenColor		white
+	PaperOrientation	landscape
+	PaperPositionMode	auto
+	PaperType		usletter
+	PaperUnits		inches
+	Block {
+	  BlockType		  Inport
+	  Name			  "y"
+	  Position		  [735, 94, 760, 106]
+	  Orientation		  left
+	  Port			  "1"
+	  PortWidth		  "-1"
+	  SampleTime		  "-1"
+	}
+	Block {
+	  BlockType		  Inport
+	  Name			  "u"
+	  Position		  [740, 69, 765, 81]
+	  Orientation		  left
+	  Port			  "2"
+	  PortWidth		  "-1"
+	  SampleTime		  "-1"
+	}
+	Block {
+	  BlockType		  SubSystem
+	  Name			  "Filter"
+	  Ports			  [2, 2, 0, 0, 0]
+	  Position		  [555, 62, 600, 113]
+	  Orientation		  left
+	  ShowName		  off
+	  ShowPortLabels	  on
+	  MaskPromptString	  "A_m|A_o|d0|h"
+	  MaskStyleString	  "edit,edit,edit,edit"
+	  MaskTunableValueString  "on,on,on,on"
+	  MaskVariables		  "A_m=@1;A_o=@2;d0=@3;h=@4;"
+	  MaskIconFrame		  on
+	  MaskIconOpaque	  on
+	  MaskIconRotate	  none
+	  MaskIconUnits		  autoscale
+	  MaskValueString	  "A_m|A_o|d0|h"
+	  System {
+	    Name		    "Filter"
+	    Location		    [261, 139, 721, 324]
+	    Open		    off
+	    ToolBar		    off
+	    StatusBar		    off
+	    ScreenColor		    white
+	    PaperOrientation	    landscape
+	    PaperPositionMode	    auto
+	    PaperType		    usletter
+	    PaperUnits		    inches
+	    Block {
+	      BlockType		      Inport
+	      Name		      "u"
+	      Position		      [380, 38, 410, 52]
+	      Orientation	      left
+	      Port		      "1"
+	      PortWidth		      "-1"
+	      SampleTime	      "-1"
+	    }
+	    Block {
+	      BlockType		      Inport
+	      Name		      "y"
+	      Position		      [380, 108, 410, 122]
+	      Orientation	      left
+	      Port		      "2"
+	      PortWidth		      "-1"
+	      SampleTime	      "-1"
+	    }
+	    Block {
+	      BlockType		      DiscreteFilter
+	      Name		      "Discrete Filter"
+	      Position		      [300, 27, 360, 63]
+	      Orientation	      left
+	      NamePlacement	      alternate
+	      ShowName		      off
+	      Numerator		      "[1]"
+	      Denominator	      "A_o"
+	      SampleTime	      "h"
+	    }
+	    Block {
+	      BlockType		      DiscreteFilter
+	      Name		      "Discrete Filter1"
+	      Position		      [305, 97, 365, 133]
+	      Orientation	      left
+	      NamePlacement	      alternate
+	      ShowName		      off
+	      Numerator		      "[1]"
+	      Denominator	      "A_o"
+	      SampleTime	      "h"
+	    }
+	    Block {
+	      BlockType		      DiscreteFilter
+	      Name		      "Discrete Filter2"
+	      Position		      [220, 27, 280, 63]
+	      Orientation	      left
+	      NamePlacement	      alternate
+	      ShowName		      off
+	      Numerator		      "[1]"
+	      Denominator	      "A_m"
+	      SampleTime	      "h"
+	    }
+	    Block {
+	      BlockType		      DiscreteFilter
+	      Name		      "Discrete Filter3"
+	      Position		      [220, 97, 280, 133]
+	      Orientation	      left
+	      NamePlacement	      alternate
+	      ShowName		      off
+	      Numerator		      "[1]"
+	      Denominator	      "A_m"
+	      SampleTime	      "h"
+	    }
+	    Block {
+	      BlockType		      DiscreteFilter
+	      Name		      "Discrete Filter4"
+	      Position		      [140, 27, 200, 63]
+	      Orientation	      left
+	      NamePlacement	      alternate
+	      ShowName		      off
+	      Numerator		      "[zeros(1,d0-1) 1]"
+	      Denominator	      "[1]"
+	      SampleTime	      "h"
+	    }
+	    Block {
+	      BlockType		      DiscreteFilter
+	      Name		      "Discrete Filter5"
+	      Position		      [140, 97, 200, 133]
+	      Orientation	      left
+	      NamePlacement	      alternate
+	      ShowName		      off
+	      Numerator		      "[zeros(1,d0-1) 1]"
+	      Denominator	      "[1]"
+	      SampleTime	      "h"
+	    }
+	    Block {
+	      BlockType		      Outport
+	      Name		      "u_f"
+	      Position		      [75, 38, 105, 52]
+	      Orientation	      left
+	      Port		      "1"
+	      OutputWhenDisabled      held
+	      InitialOutput	      "0"
+	    }
+	    Block {
+	      BlockType		      Outport
+	      Name		      "y_f"
+	      Position		      [75, 108, 105, 122]
+	      Orientation	      left
+	      Port		      "2"
+	      OutputWhenDisabled      held
+	      InitialOutput	      "0"
+	    }
+	    Line {
+	      SrcBlock		      "Discrete Filter1"
+	      SrcPort		      1
+	      DstBlock		      "Discrete Filter3"
+	      DstPort		      1
+	    }
+	    Line {
+	      SrcBlock		      "Discrete Filter"
+	      SrcPort		      1
+	      DstBlock		      "Discrete Filter2"
+	      DstPort		      1
+	    }
+	    Line {
+	      SrcBlock		      "y"
+	      SrcPort		      1
+	      DstBlock		      "Discrete Filter1"
+	      DstPort		      1
+	    }
+	    Line {
+	      SrcBlock		      "u"
+	      SrcPort		      1
+	      DstBlock		      "Discrete Filter"
+	      DstPort		      1
+	    }
+	    Line {
+	      SrcBlock		      "Discrete Filter3"
+	      SrcPort		      1
+	      DstBlock		      "Discrete Filter5"
+	      DstPort		      1
+	    }
+	    Line {
+	      SrcBlock		      "Discrete Filter5"
+	      SrcPort		      1
+	      DstBlock		      "y_f"
+	      DstPort		      1
+	    }
+	    Line {
+	      SrcBlock		      "Discrete Filter2"
+	      SrcPort		      1
+	      DstBlock		      "Discrete Filter4"
+	      DstPort		      1
+	    }
+	    Line {
+	      SrcBlock		      "Discrete Filter4"
+	      SrcPort		      1
+	      DstBlock		      "u_f"
+	      DstPort		      1
+	    }
+	  }
+	}
+	Block {
+	  BlockType		  Gain
+	  Name			  "Gain"
+	  Position		  [640, 84, 675, 116]
+	  Orientation		  left
+	  ShowName		  off
+	  Gain			  "-1"
+	}
+	Block {
+	  BlockType		  MATLABFcn
+	  Name			  "Make R monic"
+	  Position		  [65, 90, 125, 120]
+	  Orientation		  left
+	  MATLABFcn		  "u(:)./u(1)"
+	  OutputWidth		  "3*(n_r+1)"
+	}
+	Block {
+	  BlockType		  Mux
+	  Name			  "Mux"
+	  Ports			  [2, 1, 0, 0, 0]
+	  Position		  [150, 87, 185, 123]
+	  Orientation		  left
+	  Inputs		  "2"
+	}
+	Block {
+	  BlockType		  Reference
+	  Name			  "Parameters to controller \npolynomials"
+	  Ports			  [1, 1, 0, 0, 0]
+	  Position		  [210, 69, 285, 121]
+	  Orientation		  left
+	  ShowName		  off
+	  SourceBlock		  "adaptlib/Parameters to controller \npolynom"
+"ials"
+	  SourceType		  "Unknown"
+	  n_r			  "n_r"
+	}
+	Block {
+	  BlockType		  Reference
+	  Name			  "RLS-estimator"
+	  Ports			  [2, 2, 0, 0, 0]
+	  Position		  [345, 81, 420, 134]
+	  Orientation		  left
+	  ShowName		  off
+	  SourceBlock		  "adaptlib/RLS-estimator"
+	  SourceType		  "Unknown"
+	  n			  "2*(n_r+1)"
+	  theta_0		  "theta_0"
+	  P_0			  "P_0"
+	  lambda		  "lambda"
+	  h			  "h"
+	}
+	Block {
+	  BlockType		  Reference
+	  Name			  "Signals to regressor"
+	  Ports			  [2, 1, 0, 0, 0]
+	  Position		  [445, 61, 520, 114]
+	  Orientation		  left
+	  ShowName		  off
+	  SourceBlock		  "adaptlib/Signals to regressor"
+	  SourceType		  "Unknown"
+	  m			  "n_r+1"
+	  n			  "n_r+1"
+	  h			  "h"
+	}
+	Block {
+	  BlockType		  SubSystem
+	  Name			  "Subsystem"
+	  Ports			  [0, 1, 0, 0, 0]
+	  Position		  [245, 150, 275, 180]
+	  Orientation		  left
+	  ShowName		  off
+	  ShowPortLabels	  on
+	  MaskDisplay		  "disp('T')"
+	  MaskIconFrame		  on
+	  MaskIconOpaque	  on
+	  MaskIconRotate	  none
+	  MaskIconUnits		  autoscale
+	  System {
+	    Name		    "Subsystem"
+	    Location		    [183, 233, 549, 440]
+	    Open		    off
+	    ToolBar		    off
+	    StatusBar		    off
+	    ScreenColor		    white
+	    PaperOrientation	    landscape
+	    PaperPositionMode	    auto
+	    PaperType		    usletter
+	    PaperUnits		    inches
+	    Block {
+	      BlockType		      Constant
+	      Name		      "Constant"
+	      Position		      [80, 40, 330, 100]
+	      Orientation	      left
+	      NamePlacement	      alternate
+	      ShowName		      off
+	      Value		      "polyval(A_m,1)*conv(A_o,[1 zeros(1,n_r)"
+"])"
+	    }
+	    Block {
+	      BlockType		      Outport
+	      Name		      "Out1"
+	      Position		      [25, 63, 55, 77]
+	      Orientation	      left
+	      Port		      "1"
+	      OutputWhenDisabled      held
+	      InitialOutput	      "[]"
+	    }
+	    Line {
+	      SrcBlock		      "Constant"
+	      SrcPort		      1
+	      DstBlock		      "Out1"
+	      DstPort		      1
+	    }
+	  }
+	}
+	Block {
+	  BlockType		  Outport
+	  Name			  "[R,S,T]"
+	  Position		  [20, 99, 45, 111]
+	  Orientation		  left
+	  Port			  "1"
+	  OutputWhenDisabled	  held
+	  InitialOutput		  "0"
+	}
+	Block {
+	  BlockType		  Outport
+	  Name			  "P"
+	  Position		  [300, 115, 320, 125]
+	  Orientation		  left
+	  Port			  "2"
+	  OutputWhenDisabled	  held
+	  InitialOutput		  "0"
+	}
+	Line {
+	  SrcBlock		  "Subsystem"
+	  SrcPort		  1
+	  Points		  [-40, 0]
+	  DstBlock		  "Mux"
+	  DstPort		  2
+	}
+	Line {
+	  SrcBlock		  "Parameters to controller \npolynomials"
+	  SrcPort		  1
+	  DstBlock		  "Mux"
+	  DstPort		  1
+	}
+	Line {
+	  SrcBlock		  "RLS-estimator"
+	  SrcPort		  1
+	  DstBlock		  "Parameters to controller \npolynomials"
+	  DstPort		  1
+	}
+	Line {
+	  SrcBlock		  "RLS-estimator"
+	  SrcPort		  2
+	  DstBlock		  "P"
+	  DstPort		  1
+	}
+	Line {
+	  SrcBlock		  "Signals to regressor"
+	  SrcPort		  1
+	  Points		  [0, 5]
+	  DstBlock		  "RLS-estimator"
+	  DstPort		  1
+	}
+	Line {
+	  SrcBlock		  "Filter"
+	  SrcPort		  2
+	  DstBlock		  "Signals to regressor"
+	  DstPort		  2
+	}
+	Line {
+	  SrcBlock		  "Filter"
+	  SrcPort		  1
+	  DstBlock		  "Signals to regressor"
+	  DstPort		  1
+	}
+	Line {
+	  SrcBlock		  "y"
+	  SrcPort		  1
+	  Points		  [-10, 0]
+	  Branch {
+	    Points		    [0, 20]
+	    DstBlock		    "RLS-estimator"
+	    DstPort		    2
+	  }
+	  Branch {
+	    DstBlock		    "Gain"
+	    DstPort		    1
+	  }
+	}
+	Line {
+	  SrcBlock		  "u"
+	  SrcPort		  1
+	  DstBlock		  "Filter"
+	  DstPort		  1
+	}
+	Line {
+	  SrcBlock		  "Gain"
+	  SrcPort		  1
+	  DstBlock		  "Filter"
+	  DstPort		  2
+	}
+	Line {
+	  SrcBlock		  "Mux"
+	  SrcPort		  1
+	  DstBlock		  "Make R monic"
+	  DstPort		  1
+	}
+	Line {
+	  SrcBlock		  "Make R monic"
+	  SrcPort		  1
+	  DstBlock		  "[R,S,T]"
+	  DstPort		  1
+	}
+	Annotation {
+	  Position		  [261, 191]
+	  Text			  "polyval(A_m,1)*conv(A_o,[1 zeros(1,n_r)])"
+	}
+      }
+    }
+    Block {
+      BlockType		      SubSystem
+      Name		      "In-direct RLS-Estimator"
+      Ports		      [2, 2, 0, 0, 0]
+      Position		      [50, 351, 125, 404]
+      Priority		      "1"
+      ShowPortLabels	      on
+      MaskPromptString	      "m (b_1 ... b_m)|n (a_1 ... a_n)|Initial estimat"
+"e (b_1 ... b_m a_1 ... a_n]|Initial covariance matrix|lambda|Sampling period"
+      MaskStyleString	      "edit,edit,edit,edit,edit,edit"
+      MaskTunableValueString  "on,on,on,on,on,on"
+      MaskVariables	      "m=@1;n=@2;theta_0=@3;P_0=@4;lambda=@5;h=@6;"
+      MaskIconFrame	      on
+      MaskIconOpaque	      on
+      MaskIconRotate	      none
+      MaskIconUnits	      autoscale
+      MaskValueString	      "|||||"
+      System {
+	Name			"In-direct RLS-Estimator"
+	Location		[349, 344, 916, 566]
+	Open			off
+	ToolBar			off
+	StatusBar		off
+	ScreenColor		white
+	PaperOrientation	landscape
+	PaperPositionMode	auto
+	PaperType		usletter
+	PaperUnits		inches
+	Block {
+	  BlockType		  Inport
+	  Name			  "y"
+	  Position		  [475, 90, 505, 110]
+	  Orientation		  left
+	  Port			  "1"
+	  PortWidth		  "-1"
+	  SampleTime		  "-1"
+	}
+	Block {
+	  BlockType		  Inport
+	  Name			  "u"
+	  Position		  [475, 50, 505, 70]
+	  Orientation		  left
+	  Port			  "2"
+	  PortWidth		  "-1"
+	  SampleTime		  "-1"
+	}
+	Block {
+	  BlockType		  Reference
+	  Name			  "Parameters to model \npolynomials"
+	  Ports			  [1, 1, 0, 0, 0]
+	  Position		  [60, 74, 135, 126]
+	  Orientation		  left
+	  SourceBlock		  "adaptlib/Parameters to model \npolynomials"
+	  SourceType		  "Unknown"
+	  m			  "m"
+	  n			  "n"
+	}
+	Block {
+	  BlockType		  Reference
+	  Name			  "RLS-estimator"
+	  Ports			  [2, 2, 0, 0, 0]
+	  Position		  [195, 85, 270, 145]
+	  Orientation		  left
+	  SourceBlock		  "adaptlib/RLS-estimator"
+	  SourceType		  "Unknown"
+	  n			  "m+n"
+	  theta_0		  "theta_0"
+	  P_0			  "P_0"
+	  lambda		  "lambda"
+	  h			  "h"
+	}
+	Block {
+	  BlockType		  Reference
+	  Name			  "Signals to regressor"
+	  Ports			  [2, 1, 0, 0, 0]
+	  Position		  [315, 61, 390, 114]
+	  Orientation		  left
+	  SourceBlock		  "adaptlib/Signals to regressor"
+	  SourceType		  "Unknown"
+	  m			  "m"
+	  n			  "n"
+	  h			  "h"
+	}
+	Block {
+	  BlockType		  Outport
+	  Name			  "[B,A]"
+	  Position		  [15, 90, 45, 110]
+	  Orientation		  left
+	  Port			  "1"
+	  OutputWhenDisabled	  held
+	  InitialOutput		  "0"
+	}
+	Block {
+	  BlockType		  Outport
+	  Name			  "P"
+	  Position		  [150, 120, 180, 140]
+	  Orientation		  left
+	  Port			  "2"
+	  OutputWhenDisabled	  held
+	  InitialOutput		  "0"
+	}
+	Line {
+	  SrcBlock		  "Parameters to model \npolynomials"
+	  SrcPort		  1
+	  DstBlock		  "[B,A]"
+	  DstPort		  1
+	}
+	Line {
+	  SrcBlock		  "RLS-estimator"
+	  SrcPort		  1
+	  DstBlock		  "Parameters to model \npolynomials"
+	  DstPort		  1
+	}
+	Line {
+	  SrcBlock		  "RLS-estimator"
+	  SrcPort		  2
+	  DstBlock		  "P"
+	  DstPort		  1
+	}
+	Line {
+	  SrcBlock		  "y"
+	  SrcPort		  1
+	  Points		  [-40, 0]
+	  Branch {
+	    DstBlock		    "Signals to regressor"
+	    DstPort		    2
+	  }
+	  Branch {
+	    Points		    [0, 30]
+	    DstBlock		    "RLS-estimator"
+	    DstPort		    2
+	  }
+	}
+	Line {
+	  SrcBlock		  "Signals to regressor"
+	  SrcPort		  1
+	  Points		  [0, 10]
+	  DstBlock		  "RLS-estimator"
+	  DstPort		  1
+	}
+	Line {
+	  SrcBlock		  "u"
+	  SrcPort		  1
+	  Points		  [-25, 0; 0, 15]
+	  DstBlock		  "Signals to regressor"
+	  DstPort		  1
+	}
+      }
+    }
+    Block {
+      BlockType		      SubSystem
+      Name		      "Minimum-degree\npole-placement design\n with ze"
+"ro cancelation"
+      Ports		      [1, 1, 0, 0, 0]
+      Position		      [175, 239, 250, 291]
+      ShowPortLabels	      on
+      MaskDescription	      "Minimum-degree pole-placement design without ze"
+"ro cancellation\n"
+      MaskPromptString	      "deg A|deg B|deg R|B_m|A_m|A_o|Factor in R|Facto"
+"r in S|Sampling period"
+      MaskStyleString	      "edit,edit,edit,edit,edit,edit,edit,edit,edit"
+      MaskTunableValueString  "on,on,on,on,on,on,on,on,on"
+      MaskVariables	      "n_a=@1;n_b=@2;n_r=@3;B_m=@4;A_m=@5;A_o=@6;A_r=@"
+"7;A_s=@8;h=@9;"
+      MaskIconFrame	      on
+      MaskIconOpaque	      on
+      MaskIconRotate	      none
+      MaskIconUnits	      autoscale
+      MaskValueString	      "||||||||"
+      System {
+	Name			"Minimum-degree\npole-placement design\n with "
+"zero cancelation"
+	Location		[317, 646, 592, 751]
+	Open			off
+	ToolBar			off
+	StatusBar		off
+	ScreenColor		white
+	PaperOrientation	landscape
+	PaperPositionMode	auto
+	PaperType		usletter
+	PaperUnits		inches
+	Block {
+	  BlockType		  Inport
+	  Name			  "[B,A]"
+	  Position		  [35, 28, 65, 42]
+	  Port			  "1"
+	  PortWidth		  "-1"
+	  SampleTime		  "-1"
+	}
+	Block {
+	  BlockType		  "S-Function"
+	  Name			  "S-Function"
+	  Ports			  [1, 1, 0, 0, 0]
+	  Position		  [105, 20, 165, 50]
+	  FunctionName		  "zdesign"
+	  Parameters		  "n_a,n_b,n_r,B_m,A_m,A_o,A_r,A_s,h"
+	  PortCounts		  "[]"
+	  SFunctionModules	  "''"
+	}
+	Block {
+	  BlockType		  Outport
+	  Name			  "[R,S,T]"
+	  Position		  [200, 28, 230, 42]
+	  Port			  "1"
+	  OutputWhenDisabled	  held
+	  InitialOutput		  "[]"
+	}
+	Line {
+	  SrcBlock		  "S-Function"
+	  SrcPort		  1
+	  DstBlock		  "[R,S,T]"
+	  DstPort		  1
+	}
+	Line {
+	  SrcBlock		  "[B,A]"
+	  SrcPort		  1
+	  DstBlock		  "S-Function"
+	  DstPort		  1
+	}
+      }
+    }
+    Block {
+      BlockType		      SubSystem
+      Name		      "Minimum-degree\npole-placement design\n without"
+" zero cancelation"
+      Ports		      [1, 1, 0, 0, 0]
+      Position		      [50, 239, 125, 291]
+      ShowPortLabels	      on
+      MaskDescription	      "Minimum-degree pole-placement design without ze"
+"ro cancellation\n"
+      MaskPromptString	      "deg A|deg B|deg R|A_o|A_m|Factor in R|Factor in"
+" S|Sampling period"
+      MaskStyleString	      "edit,edit,edit,edit,edit,edit,edit,edit"
+      MaskTunableValueString  "on,on,on,on,on,on,on,on"
+      MaskVariables	      "n_a=@1;n_b=@2;n_r=@3;A_o=@4;A_m=@5;A_r=@6;A_s=@"
+"7;h=@8;"
+      MaskIconFrame	      on
+      MaskIconOpaque	      on
+      MaskIconRotate	      none
+      MaskIconUnits	      autoscale
+      MaskValueString	      "|||||||"
+      System {
+	Name			"Minimum-degree\npole-placement design\n witho"
+"ut zero cancelation"
+	Location		[759, 306, 1034, 411]
+	Open			off
+	ToolBar			off
+	StatusBar		off
+	ScreenColor		white
+	PaperOrientation	landscape
+	PaperPositionMode	auto
+	PaperType		usletter
+	PaperUnits		inches
+	Block {
+	  BlockType		  Inport
+	  Name			  "[B,A]"
+	  Position		  [35, 28, 65, 42]
+	  Port			  "1"
+	  PortWidth		  "-1"
+	  SampleTime		  "-1"
+	}
+	Block {
+	  BlockType		  "S-Function"
+	  Name			  "S-Function"
+	  Ports			  [1, 1, 0, 0, 0]
+	  Position		  [105, 20, 165, 50]
+	  FunctionName		  "nzdesign"
+	  Parameters		  "n_a,n_b,n_r,A_m,A_o,A_r,A_s,h"
+	  PortCounts		  "[]"
+	  SFunctionModules	  "''"
+	}
+	Block {
+	  BlockType		  Outport
+	  Name			  "[R,S,T]"
+	  Position		  [200, 28, 230, 42]
+	  Port			  "1"
+	  OutputWhenDisabled	  held
+	  InitialOutput		  "[]"
+	}
+	Line {
+	  SrcBlock		  "[B,A]"
+	  SrcPort		  1
+	  DstBlock		  "S-Function"
+	  DstPort		  1
+	}
+	Line {
+	  SrcBlock		  "S-Function"
+	  SrcPort		  1
+	  DstBlock		  "[R,S,T]"
+	  DstPort		  1
+	}
+      }
+    }
+    Block {
+      BlockType		      SubSystem
+      Name		      "Parameters to controller \npolynomials"
+      Ports		      [1, 1, 0, 0, 0]
+      Position		      [420, 139, 495, 191]
+      ShowPortLabels	      on
+      MaskPromptString	      "n_r (degree of R, S )"
+      MaskStyleString	      "edit"
+      MaskTunableValueString  "on"
+      MaskVariables	      "n_r=@1;"
+      MaskIconFrame	      on
+      MaskIconOpaque	      on
+      MaskIconRotate	      none
+      MaskIconUnits	      autoscale
+      System {
+	Name			"Parameters to controller \npolynomials"
+	Location		[405, 276, 711, 422]
+	Open			off
+	ToolBar			off
+	StatusBar		off
+	ScreenColor		white
+	PaperOrientation	landscape
+	PaperPositionMode	auto
+	PaperType		usletter
+	PaperUnits		inches
+	Block {
+	  BlockType		  Inport
+	  Name			  "theta"
+	  Position		  [30, 40, 60, 50]
+	  Port			  "1"
+	  PortWidth		  "-1"
+	  SampleTime		  "-1"
+	}
+	Block {
+	  BlockType		  Mux
+	  Name			  "Mux1"
+	  Ports			  [2, 1, 0, 0, 0]
+	  Position		  [165, 19, 200, 121]
+	  NamePlacement		  alternate
+	  ShowName		  off
+	  Inputs		  "2"
+	}
+	Block {
+	  BlockType		  Selector
+	  Name			  "Selector"
+	  Position		  [115, 27, 145, 63]
+	  NamePlacement		  alternate
+	  ShowName		  off
+	  Elements		  "[1 : n_r+1]"
+	  InputPortWidth	  "2*(n_r+1)"
+	}
+	Block {
+	  BlockType		  Selector
+	  Name			  "Selector1"
+	  Position		  [115, 80, 145, 110]
+	  NamePlacement		  alternate
+	  ShowName		  off
+	  Elements		  "[n_r+2 :  2*(n_r+1)]"
+	  InputPortWidth	  "2*(n_r+1)"
+	}
+	Block {
+	  BlockType		  Outport
+	  Name			  "[R,S]"
+	  Position		  [235, 65, 265, 75]
+	  Port			  "1"
+	  OutputWhenDisabled	  held
+	  InitialOutput		  "0"
+	}
+	Line {
+	  SrcBlock		  "theta"
+	  SrcPort		  1
+	  Points		  [15, 0]
+	  Branch {
+	    Points		    [0, 50]
+	    DstBlock		    "Selector1"
+	    DstPort		    1
+	  }
+	  Branch {
+	    DstBlock		    "Selector"
+	    DstPort		    1
+	  }
+	}
+	Line {
+	  SrcBlock		  "Selector"
+	  SrcPort		  1
+	  DstBlock		  "Mux1"
+	  DstPort		  1
+	}
+	Line {
+	  SrcBlock		  "Mux1"
+	  SrcPort		  1
+	  DstBlock		  "[R,S]"
+	  DstPort		  1
+	}
+	Line {
+	  SrcBlock		  "Selector1"
+	  SrcPort		  1
+	  DstBlock		  "Mux1"
+	  DstPort		  2
+	}
+      }
+    }
+    Block {
+      BlockType		      SubSystem
+      Name		      "Parameters to model \npolynomials"
+      Ports		      [1, 1, 0, 0, 0]
+      Position		      [300, 139, 375, 191]
+      ShowPortLabels	      on
+      MaskPromptString	      "m (b_1 ... b_m)|n (a_1 ... a_n)"
+      MaskStyleString	      "edit,edit"
+      MaskTunableValueString  "on,on"
+      MaskVariables	      "m=@1;n=@2;"
+      MaskIconFrame	      on
+      MaskIconOpaque	      on
+      MaskIconRotate	      none
+      MaskIconUnits	      autoscale
+      MaskValueString	      "|"
+      System {
+	Name			"Parameters to model \npolynomials"
+	Location		[410, 300, 716, 446]
+	Open			off
+	ToolBar			off
+	StatusBar		off
+	ScreenColor		white
+	PaperOrientation	landscape
+	PaperPositionMode	auto
+	PaperType		usletter
+	PaperUnits		inches
+	Block {
+	  BlockType		  Inport
+	  Name			  "theta"
+	  Position		  [30, 30, 60, 40]
+	  Port			  "1"
+	  PortWidth		  "-1"
+	  SampleTime		  "-1"
+	}
+	Block {
+	  BlockType		  Constant
+	  Name			  "Constant3"
+	  Position		  [120, 60, 140, 80]
+	  NamePlacement		  alternate
+	  ShowName		  off
+	  Value			  "1"
+	}
+	Block {
+	  BlockType		  Mux
+	  Name			  "Mux1"
+	  Ports			  [3, 1, 0, 0, 0]
+	  Position		  [165, 20, 205, 120]
+	  NamePlacement		  alternate
+	  ShowName		  off
+	  Inputs		  "3"
+	}
+	Block {
+	  BlockType		  Selector
+	  Name			  "Selector"
+	  Position		  [115, 17, 145, 53]
+	  NamePlacement		  alternate
+	  ShowName		  off
+	  Elements		  "[1 : m]"
+	  InputPortWidth	  "m+n"
+	}
+	Block {
+	  BlockType		  Selector
+	  Name			  "Selector1"
+	  Position		  [115, 90, 145, 120]
+	  NamePlacement		  alternate
+	  ShowName		  off
+	  Elements		  "[m+1 :  m+n]"
+	  InputPortWidth	  "m+n "
+	}
+	Block {
+	  BlockType		  Outport
+	  Name			  "[B,A]"
+	  Position		  [250, 65, 280, 75]
+	  Port			  "1"
+	  OutputWhenDisabled	  held
+	  InitialOutput		  "0"
+	}
+	Line {
+	  SrcBlock		  "Constant3"
+	  SrcPort		  1
+	  DstBlock		  "Mux1"
+	  DstPort		  2
+	}
+	Line {
+	  SrcBlock		  "Mux1"
+	  SrcPort		  1
+	  DstBlock		  "[B,A]"
+	  DstPort		  1
+	}
+	Line {
+	  SrcBlock		  "Selector"
+	  SrcPort		  1
+	  DstBlock		  "Mux1"
+	  DstPort		  1
+	}
+	Line {
+	  SrcBlock		  "Selector1"
+	  SrcPort		  1
+	  DstBlock		  "Mux1"
+	  DstPort		  3
+	}
+	Line {
+	  SrcBlock		  "theta"
+	  SrcPort		  1
+	  Points		  [15, 0]
+	  Branch {
+	    DstBlock		    "Selector"
+	    DstPort		    1
+	  }
+	  Branch {
+	    Points		    [0, 70]
+	    DstBlock		    "Selector1"
+	    DstPort		    1
+	  }
+	}
+      }
+    }
+    Block {
+      BlockType		      SubSystem
+      Name		      "Pause simulation"
+      Ports		      [0, 0, 0, 0, 0]
+      Position		      [64, 446, 111, 471]
+      ShowPortLabels	      on
+      MaskDescription	      "Pauses the simulation at the times in the pausi"
+"ng time vector"
+      MaskPromptString	      "Pausing time vector"
+      MaskStyleString	      "edit"
+      MaskTunableValueString  "on"
+      MaskVariables	      "par=@1;"
+      MaskDisplay	      "disp('PAUSE')"
+      MaskIconFrame	      on
+      MaskIconOpaque	      on
+      MaskIconRotate	      none
+      MaskIconUnits	      autoscale
+      System {
+	Name			"Pause simulation"
+	Location		[55, 782, 320, 879]
+	Open			off
+	ToolBar			off
+	StatusBar		off
+	ScreenColor		white
+	PaperOrientation	landscape
+	PaperPositionMode	auto
+	PaperType		usletter
+	PaperUnits		inches
+	Block {
+	  BlockType		  "S-Function"
+	  Name			  "Pause simulation"
+	  Ports			  [0, 0, 0, 0, 0]
+	  Position		  [95, 25, 155, 55]
+	  FunctionName		  "pausesim"
+	  Parameters		  "par"
+	  PortCounts		  "[]"
+	  SFunctionModules	  "''"
+	}
+      }
+    }
+    Block {
+      BlockType		      SubSystem
+      Name		      "R"
+      Ports		      [2, 1, 0, 0, 0]
+      Position		      [430, 45, 475, 85]
+      ShowName		      off
+      ShowPortLabels	      on
+      MaskPromptString	      "n (degree R)|Sampling period"
+      MaskStyleString	      "edit,edit"
+      MaskTunableValueString  "on,on"
+      MaskVariables	      "n_D=@1;h=@2;"
+      MaskDisplay	      "plot([0.3 0.7],[0.5 0.5])\ntext(0.1,0.77,'R')\n"
+"text(0.53,0.65,'1')\ntext(0.41,0.28,'R(z)')\n"
+      MaskIconFrame	      on
+      MaskIconOpaque	      on
+      MaskIconRotate	      none
+      MaskIconUnits	      normalized
+      MaskValueString	      "|"
+      System {
+	Name			"R"
+	Location		[302, 408, 712, 544]
+	Open			off
+	ToolBar			off
+	StatusBar		off
+	ScreenColor		white
+	PaperOrientation	landscape
+	PaperPositionMode	auto
+	PaperType		usletter
+	PaperUnits		inches
+	Block {
+	  BlockType		  Inport
+	  Name			  "R"
+	  Position		  [25, 60, 55, 70]
+	  NamePlacement		  alternate
+	  Port			  "1"
+	  PortWidth		  "-1"
+	  SampleTime		  "-1"
+	}
+	Block {
+	  BlockType		  Inport
+	  Name			  "In"
+	  Position		  [25, 98, 55, 112]
+	  ShowName		  off
+	  Port			  "2"
+	  PortWidth		  "-1"
+	  SampleTime		  "-1"
+	}
+	Block {
+	  BlockType		  Reference
+	  Name			  "Adaptive Discrete Filter"
+	  Ports			  [3, 1, 0, 0, 0]
+	  Position		  [170, 33, 240, 97]
+	  ShowName		  off
+	  SourceBlock		  "adaptlib/Adaptive Discrete Filter"
+	  SourceType		  "Unknown"
+	  n_N			  "0"
+	  n_D			  "n_D"
+	  h			  "h"
+	}
+	Block {
+	  BlockType		  Constant
+	  Name			  "Constant"
+	  Position		  [70, 25, 90, 45]
+	  Value			  "1"
+	}
+	Block {
+	  BlockType		  Outport
+	  Name			  "Ou1"
+	  Position		  [355, 58, 385, 72]
+	  ShowName		  off
+	  Port			  "1"
+	  OutputWhenDisabled	  held
+	  InitialOutput		  "[]"
+	}
+	Line {
+	  SrcBlock		  "Constant"
+	  SrcPort		  1
+	  Points		  [60, 0]
+	  DstBlock		  "Adaptive Discrete Filter"
+	  DstPort		  1
+	}
+	Line {
+	  SrcBlock		  "Adaptive Discrete Filter"
+	  SrcPort		  1
+	  DstBlock		  "Ou1"
+	  DstPort		  1
+	}
+	Line {
+	  SrcBlock		  "In"
+	  SrcPort		  1
+	  Points		  [95, 0]
+	  DstBlock		  "Adaptive Discrete Filter"
+	  DstPort		  3
+	}
+	Line {
+	  SrcBlock		  "R"
+	  SrcPort		  1
+	  DstBlock		  "Adaptive Discrete Filter"
+	  DstPort		  2
+	}
+      }
+    }
+    Block {
+      BlockType		      SubSystem
+      Name		      "RLS-estimator"
+      Ports		      [2, 2, 0, 0, 0]
+      Position		      [180, 141, 255, 194]
+      ShowPortLabels	      on
+      MaskDescription	      "A discrete-time recursive least-squares estimat"
+"or for a model on the form\n\n  y = phi'*theta\n"
+      MaskPromptString	      "n (number of parameters)|Initial estimate|Initi"
+"al covariance matrix|lambda|Sampling period"
+      MaskStyleString	      "edit,edit,edit,edit,edit"
+      MaskTunableValueString  "on,on,on,on,on"
+      MaskVariables	      "n=@1;theta_0=@2;P_0=@3;lambda=@4;h=@5;"
+      MaskIconFrame	      on
+      MaskIconOpaque	      on
+      MaskIconRotate	      none
+      MaskIconUnits	      autoscale
+      MaskValueString	      "||||"
+      System {
+	Name			"RLS-estimator"
+	Location		[188, 44, 613, 274]
+	Open			off
+	ToolBar			off
+	StatusBar		off
+	ScreenColor		white
+	PaperOrientation	landscape
+	PaperPositionMode	auto
+	PaperType		usletter
+	PaperUnits		inches
+	Block {
+	  BlockType		  Inport
+	  Name			  "phi"
+	  Position		  [15, 58, 45, 72]
+	  Port			  "1"
+	  PortWidth		  "-1"
+	  SampleTime		  "-1"
+	}
+	Block {
+	  BlockType		  Inport
+	  Name			  "y"
+	  Position		  [15, 108, 45, 122]
+	  Port			  "2"
+	  PortWidth		  "-1"
+	  SampleTime		  "-1"
+	}
+	Block {
+	  BlockType		  Mux
+	  Name			  "Mux"
+	  Ports			  [2, 1, 0, 0, 0]
+	  Position		  [75, 57, 110, 93]
+	  Inputs		  "2"
+	}
+	Block {
+	  BlockType		  Selector
+	  Name			  "P1"
+	  Position		  [230, 90, 260, 120]
+	  Elements		  "[n+1:n+n^2]"
+	  InputPortWidth	  "n+n^2"
+	}
+	Block {
+	  BlockType		  "S-Function"
+	  Name			  "S-Function"
+	  Ports			  [1, 1, 0, 0, 0]
+	  Position		  [125, 50, 185, 100]
+	  NamePlacement		  alternate
+	  FunctionName		  "rls"
+	  Parameters		  "n,theta_0,P_0,lambda,h"
+	  PortCounts		  "[]"
+	  SFunctionModules	  "''"
+	}
+	Block {
+	  BlockType		  Selector
+	  Name			  "theta2"
+	  Position		  [230, 25, 260, 55]
+	  Elements		  "[1:n]"
+	  InputPortWidth	  "n+n^2"
+	}
+	Block {
+	  BlockType		  Outport
+	  Name			  "theta"
+	  Position		  [285, 33, 315, 47]
+	  Port			  "1"
+	  OutputWhenDisabled	  held
+	  InitialOutput		  "0"
+	}
+	Block {
+	  BlockType		  Outport
+	  Name			  "P"
+	  Position		  [285, 98, 315, 112]
+	  Port			  "2"
+	  OutputWhenDisabled	  held
+	  InitialOutput		  "0"
+	}
+	Line {
+	  SrcBlock		  "phi"
+	  SrcPort		  1
+	  DstBlock		  "Mux"
+	  DstPort		  1
+	}
+	Line {
+	  SrcBlock		  "y"
+	  SrcPort		  1
+	  Points		  [0, -30]
+	  DstBlock		  "Mux"
+	  DstPort		  2
+	}
+	Line {
+	  Labels		  [0, 0]
+	  SrcBlock		  "S-Function"
+	  SrcPort		  1
+	  Points		  [5, 0]
+	  Branch {
+	    Points		    [0, -35]
+	    DstBlock		    "theta2"
+	    DstPort		    1
+	  }
+	  Branch {
+	    Points		    [0, 30]
+	    DstBlock		    "P1"
+	    DstPort		    1
+	  }
+	}
+	Line {
+	  SrcBlock		  "theta2"
+	  SrcPort		  1
+	  DstBlock		  "theta"
+	  DstPort		  1
+	}
+	Line {
+	  SrcBlock		  "P1"
+	  SrcPort		  1
+	  DstBlock		  "P"
+	  DstPort		  1
+	}
+	Line {
+	  SrcBlock		  "Mux"
+	  SrcPort		  1
+	  DstBlock		  "S-Function"
+	  DstPort		  1
+	}
+      }
+    }
+    Block {
+      BlockType		      SubSystem
+      Name		      "S"
+      Ports		      [2, 1, 0, 0, 0]
+      Position		      [485, 45, 530, 85]
+      ShowName		      off
+      ShowPortLabels	      on
+      MaskPromptString	      "n (degree S)|Sampling period"
+      MaskStyleString	      "edit,edit"
+      MaskTunableValueString  "on,on"
+      MaskVariables	      "n_N=@1;h=@2;"
+      MaskDisplay	      "plot([0.3 0.7],[0.5 0.5])\ntext(0.1,0.77,'S')\n"
+"text(0.41,0.65,'S(z)')\ntext(0.53,0.28,'1')\n"
+      MaskIconFrame	      on
+      MaskIconOpaque	      on
+      MaskIconRotate	      none
+      MaskIconUnits	      normalized
+      MaskValueString	      "|"
+      System {
+	Name			"S"
+	Location		[287, 333, 697, 469]
+	Open			off
+	ToolBar			off
+	StatusBar		off
+	ScreenColor		white
+	PaperOrientation	landscape
+	PaperPositionMode	auto
+	PaperType		usletter
+	PaperUnits		inches
+	Block {
+	  BlockType		  Inport
+	  Name			  "T"
+	  Position		  [85, 35, 115, 45]
+	  NamePlacement		  alternate
+	  Port			  "1"
+	  PortWidth		  "-1"
+	  SampleTime		  "-1"
+	}
+	Block {
+	  BlockType		  Inport
+	  Name			  "In"
+	  Position		  [25, 98, 55, 112]
+	  ShowName		  off
+	  Port			  "2"
+	  PortWidth		  "-1"
+	  SampleTime		  "-1"
+	}
+	Block {
+	  BlockType		  Reference
+	  Name			  "Adaptive Discrete Filter"
+	  Ports			  [3, 1, 0, 0, 0]
+	  Position		  [170, 33, 240, 97]
+	  ShowName		  off
+	  SourceBlock		  "adaptlib/Adaptive Discrete Filter"
+	  SourceType		  "Unknown"
+	  n_N			  "n_N"
+	  n_D			  "0"
+	  h			  "h"
+	}
+	Block {
+	  BlockType		  Constant
+	  Name			  "Constant"
+	  Position		  [85, 55, 105, 75]
+	  Value			  "1"
+	}
+	Block {
+	  BlockType		  Outport
+	  Name			  "Ou1"
+	  Position		  [355, 58, 385, 72]
+	  ShowName		  off
+	  Port			  "1"
+	  OutputWhenDisabled	  held
+	  InitialOutput		  "[]"
+	}
+	Line {
+	  SrcBlock		  "In"
+	  SrcPort		  1
+	  Points		  [95, 0]
+	  DstBlock		  "Adaptive Discrete Filter"
+	  DstPort		  3
+	}
+	Line {
+	  SrcBlock		  "Adaptive Discrete Filter"
+	  SrcPort		  1
+	  DstBlock		  "Ou1"
+	  DstPort		  1
+	}
+	Line {
+	  SrcBlock		  "Constant"
+	  SrcPort		  1
+	  DstBlock		  "Adaptive Discrete Filter"
+	  DstPort		  2
+	}
+	Line {
+	  SrcBlock		  "T"
+	  SrcPort		  1
+	  Points		  [35, 0]
+	  DstBlock		  "Adaptive Discrete Filter"
+	  DstPort		  1
+	}
+      }
+    }
+    Block {
+      BlockType		      SubSystem
+      Name		      "Signals to regressor"
+      Ports		      [2, 1, 0, 0, 0]
+      Position		      [50, 141, 125, 194]
+      ShowPortLabels	      on
+      MaskDescription	      "Merging of y and u to a regression vector as:\n"
+"\n  phi(t-1) = [u(t-1) ... u(t-m) -y(t-1) ... -y(t-n)]'"
+      MaskPromptString	      "m (u(t-1) ... u(t-m))|n (-y(t-1) ... -y(t-n))|S"
+"ampling period"
+      MaskStyleString	      "edit,edit,edit"
+      MaskTunableValueString  "on,on,on"
+      MaskVariables	      "m=@1;n=@2;h=@3;"
+      MaskIconFrame	      on
+      MaskIconOpaque	      on
+      MaskIconRotate	      none
+      MaskIconUnits	      autoscale
+      MaskValueString	      "||"
+      System {
+	Name			"Signals to regressor"
+	Location		[379, 469, 699, 578]
+	Open			off
+	ToolBar			off
+	StatusBar		off
+	ScreenColor		white
+	PaperOrientation	landscape
+	PaperPositionMode	auto
+	PaperType		usletter
+	PaperUnits		inches
+	Block {
+	  BlockType		  Inport
+	  Name			  "u"
+	  Position		  [15, 13, 45, 27]
+	  Port			  "1"
+	  PortWidth		  "-1"
+	  SampleTime		  "-1"
+	}
+	Block {
+	  BlockType		  Inport
+	  Name			  "y"
+	  Position		  [15, 48, 45, 62]
+	  Port			  "2"
+	  PortWidth		  "-1"
+	  SampleTime		  "-1"
+	}
+	Block {
+	  BlockType		  Gain
+	  Name			  "Gain"
+	  Position		  [75, 40, 105, 70]
+	  ShowName		  off
+	  Gain			  "-1"
+	}
+	Block {
+	  BlockType		  Mux
+	  Name			  "Mux"
+	  Ports			  [2, 1, 0, 0, 0]
+	  Position		  [120, 25, 160, 65]
+	  NamePlacement		  alternate
+	  ShowName		  off
+	  Inputs		  "2"
+	}
+	Block {
+	  BlockType		  "S-Function"
+	  Name			  "S-Function"
+	  Ports			  [1, 1, 0, 0, 0]
+	  Position		  [185, 30, 245, 60]
+	  ShowName		  off
+	  FunctionName		  "phivector"
+	  Parameters		  "m,n,h "
+	  PortCounts		  "[]"
+	  SFunctionModules	  "''"
+	}
+	Block {
+	  BlockType		  Outport
+	  Name			  "phi"
+	  Position		  [275, 38, 305, 52]
+	  Port			  "1"
+	  OutputWhenDisabled	  held
+	  InitialOutput		  "[]"
+	}
+	Line {
+	  SrcBlock		  "y"
+	  SrcPort		  1
+	  DstBlock		  "Gain"
+	  DstPort		  1
+	}
+	Line {
+	  SrcBlock		  "Gain"
+	  SrcPort		  1
+	  DstBlock		  "Mux"
+	  DstPort		  2
+	}
+	Line {
+	  SrcBlock		  "u"
+	  SrcPort		  1
+	  Points		  [55, 0]
+	  DstBlock		  "Mux"
+	  DstPort		  1
+	}
+	Line {
+	  SrcBlock		  "S-Function"
+	  SrcPort		  1
+	  DstBlock		  "phi"
+	  DstPort		  1
+	}
+	Line {
+	  SrcBlock		  "Mux"
+	  SrcPort		  1
+	  DstBlock		  "S-Function"
+	  DstPort		  1
+	}
+      }
+    }
+    Block {
+      BlockType		      SubSystem
+      Name		      "T"
+      Ports		      [2, 1, 0, 0, 0]
+      Position		      [540, 45, 585, 85]
+      ShowName		      off
+      ShowPortLabels	      on
+      MaskPromptString	      "n (degree T)|Sampling period"
+      MaskStyleString	      "edit,edit"
+      MaskTunableValueString  "on,on"
+      MaskVariables	      "n_N=@1;h=@2;"
+      MaskDisplay	      "plot([0.3 0.7],[0.5 0.5])\ntext(0.1,0.77,'T')\n"
+"text(0.41,0.65,'T(z)')\ntext(0.53,0.28,'1')\n"
+      MaskIconFrame	      on
+      MaskIconOpaque	      on
+      MaskIconRotate	      none
+      MaskIconUnits	      normalized
+      MaskValueString	      "|"
+      System {
+	Name			"T"
+	Location		[297, 383, 707, 519]
+	Open			off
+	ToolBar			off
+	StatusBar		off
+	ScreenColor		white
+	PaperOrientation	landscape
+	PaperPositionMode	auto
+	PaperType		usletter
+	PaperUnits		inches
+	Block {
+	  BlockType		  Inport
+	  Name			  "T"
+	  Position		  [85, 35, 115, 45]
+	  NamePlacement		  alternate
+	  Port			  "1"
+	  PortWidth		  "-1"
+	  SampleTime		  "-1"
+	}
+	Block {
+	  BlockType		  Inport
+	  Name			  "In"
+	  Position		  [25, 98, 55, 112]
+	  ShowName		  off
+	  Port			  "2"
+	  PortWidth		  "-1"
+	  SampleTime		  "-1"
+	}
+	Block {
+	  BlockType		  Reference
+	  Name			  "Adaptive Discrete Filter"
+	  Ports			  [3, 1, 0, 0, 0]
+	  Position		  [170, 33, 240, 97]
+	  ShowName		  off
+	  SourceBlock		  "adaptlib/Adaptive Discrete Filter"
+	  SourceType		  "Unknown"
+	  n_N			  "n_N"
+	  n_D			  "0"
+	  h			  "h"
+	}
+	Block {
+	  BlockType		  Constant
+	  Name			  "Constant"
+	  Position		  [85, 55, 105, 75]
+	  Value			  "1"
+	}
+	Block {
+	  BlockType		  Outport
+	  Name			  "Ou1"
+	  Position		  [355, 58, 385, 72]
+	  ShowName		  off
+	  Port			  "1"
+	  OutputWhenDisabled	  held
+	  InitialOutput		  "[]"
+	}
+	Line {
+	  SrcBlock		  "T"
+	  SrcPort		  1
+	  Points		  [35, 0]
+	  DstBlock		  "Adaptive Discrete Filter"
+	  DstPort		  1
+	}
+	Line {
+	  SrcBlock		  "Constant"
+	  SrcPort		  1
+	  DstBlock		  "Adaptive Discrete Filter"
+	  DstPort		  2
+	}
+	Line {
+	  SrcBlock		  "Adaptive Discrete Filter"
+	  SrcPort		  1
+	  DstBlock		  "Ou1"
+	  DstPort		  1
+	}
+	Line {
+	  SrcBlock		  "In"
+	  SrcPort		  1
+	  Points		  [95, 0]
+	  DstBlock		  "Adaptive Discrete Filter"
+	  DstPort		  3
+	}
+      }
+    }
+  }
+}
