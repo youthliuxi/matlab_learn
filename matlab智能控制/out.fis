@@ -1,0 +1,44 @@
+[System]
+Name='out'
+Type='sugeno'
+Version=2.0
+NumInputs=3
+NumOutputs=2
+NumRules=1
+AndMethod='prod'
+OrMethod='probor'
+ImpMethod='min'
+AggMethod='max'
+DefuzzMethod='wtaver'
+
+[Input1]
+Name='x'
+Range=[-0.261799387799149 0.261799387799149]
+NumMFs=1
+MF1='ZR':'trimf',[-0.261799387799149 0 0.261799387799149]
+
+[Input2]
+Name='dx'
+Range=[-3.49065850398866 3.49065850398866]
+NumMFs=1
+MF1='ZR':'trimf',[-3.49065850398866 0 3.49065850398866]
+
+[Input3]
+Name='u'
+Range=[-200 600]
+NumMFs=0
+
+[Output1]
+Name='dx'
+Range=[-3.49065850398866 3.49065850398866]
+NumMFs=1
+MF1='No.1':'linear',[0 1 0 0]
+
+[Output2]
+Name='ddx'
+Range=[-3.49065850398866 3.49065850398866]
+NumMFs=1
+MF1='No.1':'linear',[15.8918918918919 0 -0.0810810810810811 0]
+
+[Rules]
+1 1 0, 1 1 (1) : 1
