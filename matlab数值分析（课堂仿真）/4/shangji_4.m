@@ -8,5 +8,5 @@ a=0.5;
   
 % interp1对sin函数进行分段线性插值，调用interp1的时候，默认的是分段线性插值    
 y1 = interp1(xi,yi,X,'linear');
-plot(xi,yi,'o',X,y1,'r')    
-title('分段线性插值')    
+plot(xi,yi,'o',X,y1,'r')
+title('分段线性插值')
